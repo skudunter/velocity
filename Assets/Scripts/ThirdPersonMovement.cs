@@ -12,7 +12,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
     void Start()
     {
-        _characterController = GetComponent<CharacterController>();
     }
 
     void Update()

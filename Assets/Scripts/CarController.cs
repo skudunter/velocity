@@ -19,8 +19,62 @@ public class CarController : MonoBehaviour
     public float maxMotorTorque;
     public float maxSteeringAngle;
     private Rigidbody rb;
+
+    [SerializeField]
     private float motorStrength;
+
+    [SerializeField]
     private float brakeStrength;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    public void FixedUpdate()
+    {
+        float motor = maxMotorTorque * Input.GetAxis("Vertical");
+        float motorStrengthMultiplier = motorStrength;
+
+        if (motor < 0)
+        {
+            float forwardSpeed = rb.velocity.magnitude;
+            if (forwardSpeed > 0)
+            {
+                float brakeForce = brakeStrength * forwardSpeed + 1;
+                rb.AddForce(-rb.velocity.normalized * brakeForce, ForceMode.Acceleration);
+                motorStrengthMultiplier = 0;
+            }
+        }
+
+        float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
+
+        foreach (AxleInfo axleInfo in axleInfos)
+        {
+            if (axleInfo.steering)
+            {
+                axleInfo.leftWheel.steerAngle = steering;
+                axleInfo.rightWheel.steerAngle = steering;
+            }
+            if (axleInfo.motor)
+            {
+                axleInfo.leftWheel.motorTorque = motor * motorStrengthMultiplier;
+                axleInfo.rightWheel.motorTorque = motor * motorStrengthMultiplier;
+            }
+            ApplyLocalPositionToVisuals(axleInfo.leftWheel);
+            ApplyLocalPositionToVisuals(axleInfo.rightWheel);
+            WheelHit hit;
+            bool isWheelSlippingLeft =
+                axleInfo.leftWheel.GetGroundHit(out hit)
+                && (Mathf.Abs(hit.sidewaysSlip) > 0.2f || Mathf.Abs(hit.forwardSlip) > 0.2f);
+            bool isWheelSlippingRight =
+                axleInfo.leftWheel.GetGroundHit(out hit)
+                && (Mathf.Abs(hit.sidewaysSlip) > 0.2f || Mathf.Abs(hit.forwardSlip) > 0.2f);
+            Debug.Log("isWheelSlippingLeft: " + isWheelSlippingLeft);
+            Debug.Log("isWheelSlippingRight: " + isWheelSlippingRight);
+        }
+        speedometer.text = string.Format("motor {0:N0}\n{1:N0} kph", motor, rb.velocity.magnitude);
+    }
 
     // finds the corresponding visual wheel
     // correctly applies the transform
@@ -39,40 +93,5 @@ public class CarController : MonoBehaviour
 
         visualWheel.transform.position = position;
         visualWheel.transform.rotation = rotation;
-    }
-
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
-
-    public void FixedUpdate()
-    {
-        float motor = maxMotorTorque * Input.GetAxis("Vertical");
-        //add force for quick braking
-        if (motor < 0)
-        {
-            motorStrength *= brakeStrength;
-        }
-        //display torque and speed
-        speedometer.text = string.Format("motor {0:N0}\n{1:N0} mph", motor, rb.velocity.magnitude);
-        rb.AddForce(transform.forward * motor * Time.deltaTime * motorStrength, ForceMode.Impulse);
-        float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
-
-        foreach (AxleInfo axleInfo in axleInfos)
-        {
-            if (axleInfo.steering)
-            {
-                axleInfo.leftWheel.steerAngle = steering;
-                axleInfo.rightWheel.steerAngle = steering;
-            }
-            if (axleInfo.motor)
-            {
-                axleInfo.leftWheel.motorTorque = motor;
-                axleInfo.rightWheel.motorTorque = motor;
-            }
-            ApplyLocalPositionToVisuals(axleInfo.leftWheel);
-            ApplyLocalPositionToVisuals(axleInfo.rightWheel);
-        }
     }
 }

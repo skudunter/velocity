@@ -15,6 +15,7 @@ public class AxleInfo
 public class CarController : MonoBehaviour
 {
     public TMPro.TMP_Text speedometer;
+    public TMPro.TMP_Text[] wheelIndicators; // Array of indicators for all four wheels
     public List<AxleInfo> axleInfos;
     public float maxMotorTorque;
     public float maxSteeringAngle;
@@ -63,16 +64,8 @@ public class CarController : MonoBehaviour
             }
             ApplyLocalPositionToVisuals(axleInfo.leftWheel);
             ApplyLocalPositionToVisuals(axleInfo.rightWheel);
-            WheelHit hit;
-            bool isWheelSlippingLeft =
-                axleInfo.leftWheel.GetGroundHit(out hit)
-                && (Mathf.Abs(hit.sidewaysSlip) > 0.2f || Mathf.Abs(hit.forwardSlip) > 0.2f);
-            bool isWheelSlippingRight =
-                axleInfo.leftWheel.GetGroundHit(out hit)
-                && (Mathf.Abs(hit.sidewaysSlip) > 0.2f || Mathf.Abs(hit.forwardSlip) > 0.2f);
-            Debug.Log("isWheelSlippingLeft: " + isWheelSlippingLeft);
-            Debug.Log("isWheelSlippingRight: " + isWheelSlippingRight);
         }
+
         speedometer.text = string.Format("motor {0:N0}\n{1:N0} kph", motor, rb.velocity.magnitude);
     }
 

@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class MeshGenerator : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    Mesh mesh;
+    Vector3[] vertices;
+    int[] triangles;
+    void Start(){
+        mesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = mesh;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+   
 }

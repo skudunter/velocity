@@ -14,7 +14,6 @@ public class Chunk : MonoBehaviour
     public float maxHeight = 40f;
     MeshCollider meshCollider;
     MeshFilter meshFilter;
-
     void Start()
     {
         meshCollider = GetComponent<MeshCollider>();

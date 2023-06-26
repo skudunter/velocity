@@ -10,8 +10,8 @@ public class Chunk : MonoBehaviour
     Vector2[] UV;
     public int width = 100;
     public int height = 100;
-    public float scale = 0.02f;
-    public float maxHeight = 20f;
+    public float scale = 0.05f;
+    public float maxHeight = 40f;
     MeshCollider meshCollider;
     MeshFilter meshFilter;
 

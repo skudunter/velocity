@@ -13,10 +13,12 @@ public class Chunk : MonoBehaviour
     public float scale = 0.02f;
     public float maxHeight = 20f;
     MeshCollider meshCollider;
+    MeshFilter meshFilter;
 
     void Start()
     {
         meshCollider = GetComponent<MeshCollider>();
+        meshFilter = GetComponent<MeshFilter>();
         CreateMesh();
         UpdateMesh();
     }
@@ -32,8 +34,16 @@ public class Chunk : MonoBehaviour
         {
             for (int x = 0; x <= width; x++)
             {
-                float heightValue = Mathf.PerlinNoise(x * scale, y * scale) * maxHeight;
-                vertices[vertexIndex] = new Vector3(x, heightValue, y);
+                float heightValue =
+                    Mathf.PerlinNoise(
+                        (x + transform.position.x) * scale,
+                        (y + transform.position.z) * scale
+                    ) * maxHeight;
+                vertices[vertexIndex] = new Vector3(
+                    x + transform.position.x,
+                    heightValue,
+                    y + transform.position.z
+                );
                 UV[vertexIndex] = new Vector2((float)x / width, (float)y / height); // Calculate UV coordinates
                 vertexIndex++;
             }
@@ -72,5 +82,6 @@ public class Chunk : MonoBehaviour
         mesh.uv = UV;
         mesh.RecalculateNormals();
         meshCollider.sharedMesh = mesh;
+        meshFilter.mesh = mesh;
     }
 }

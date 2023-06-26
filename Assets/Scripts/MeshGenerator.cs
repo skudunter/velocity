@@ -1,9 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static Chunk;
 
 public class MeshGenerator : MonoBehaviour
 {
-    void Start() { }
+    public GameObject chunkPrefab; // Reference to the chunk prefab
+
+    GameObject chunkObject;
+
+    void Start()
+    {
+        chunkObject = Instantiate(chunkPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        chunkObject.transform.parent = this.transform;
+    }
 }

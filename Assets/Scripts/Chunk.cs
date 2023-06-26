@@ -8,16 +8,22 @@ public class Chunk : MonoBehaviour
     Vector3[] vertices;
     int[] triangles;
     Vector2[] UV;
-    public int width = 10;
-    public int height = 10;
-    public float scale = 1f;
-    public float maxHeight = 1f;
+    public int width = 100;
+    public int height = 100;
+    public float scale = 0.02f;
+    public float maxHeight = 20f;
     MeshCollider meshCollider;
 
-    public Chunk(float x, float y) { }
-
-    private void CreateShape()
+    void Start()
     {
+        meshCollider = GetComponent<MeshCollider>();
+        CreateMesh();
+        UpdateMesh();
+    }
+
+    private void CreateMesh()
+    {
+        mesh = new Mesh();
         vertices = new Vector3[(width + 1) * (height + 1)];
         UV = new Vector2[vertices.Length]; // Initialize the UV array
         int vertexIndex = 0;
@@ -27,7 +33,6 @@ public class Chunk : MonoBehaviour
             for (int x = 0; x <= width; x++)
             {
                 float heightValue = Mathf.PerlinNoise(x * scale, y * scale) * maxHeight;
-                Debug.Log(heightValue);
                 vertices[vertexIndex] = new Vector3(x, heightValue, y);
                 UV[vertexIndex] = new Vector2((float)x / width, (float)y / height); // Calculate UV coordinates
                 vertexIndex++;

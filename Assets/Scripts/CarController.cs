@@ -36,14 +36,20 @@ public class CarController : MonoBehaviour
     {
         float motor = maxMotorTorque * Input.GetAxis("Vertical");
         float motorStrengthMultiplier = motorStrength;
-
-        if (motor < 0)
+        if (motor > 0)
+        {
+            rb.AddForce(
+                transform.forward.normalized * motor * motorStrengthMultiplier * Time.fixedDeltaTime,
+                ForceMode.Impulse
+            ); // Add force to the car (forward
+        }
+        else if (motor < 0)
         {
             float forwardSpeed = rb.velocity.magnitude;
             if (forwardSpeed > 0)
             {
                 float brakeForce = brakeStrength * forwardSpeed + 1;
-                rb.AddForce(-rb.velocity.normalized * brakeForce, ForceMode.Acceleration);
+                rb.AddForce(-transform.forward.normalized * brakeForce * Time.fixedDeltaTime, ForceMode.Acceleration);
                 motorStrengthMultiplier = 0;
             }
         }

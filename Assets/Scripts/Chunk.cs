@@ -21,6 +21,7 @@ public class Chunk : MonoBehaviour
         meshFilter = GetComponent<MeshFilter>();
         CreateMesh();
         UpdateMesh();
+        transform.position = new Vector3(0, 0, 0);
     }
 
     private void CreateMesh()

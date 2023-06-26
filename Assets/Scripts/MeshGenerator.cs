@@ -7,6 +7,7 @@ public class MeshGenerator : MonoBehaviour
     float chunkSize = 100f; // Size of each chunk
     float unloadDistance = 150f; // Distance from the player to unload chunks
     int maxChunks = 9; // Maximum number of chunks to keep in the scene
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player"); // Assumes you have a "Player" tag assigned to the player GameObject

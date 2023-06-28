@@ -1,6 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+using TMPro;
 using System.Collections.Generic;
 
 [System.Serializable]
@@ -14,17 +13,16 @@ public class AxleInfo
 
 public class CarController : MonoBehaviour
 {
-    public TMPro.TMP_Text speedometer;
+    public TMP_Text speedometer;
     public List<AxleInfo> axleInfos;
     public float maxMotorTorque;
     public float maxSteeringAngle;
+    public float motorStrength;
+    public float brakeStrength;
+    public float tiltAngle;
+    public float tiltBias;
+
     private Rigidbody rb;
-
-    [SerializeField]
-    private float motorStrength;
-
-    [SerializeField]
-    private float brakeStrength;
 
     private void Start()
     {
@@ -35,12 +33,11 @@ public class CarController : MonoBehaviour
     {
         float motor = maxMotorTorque * Input.GetAxis("Vertical");
         float motorStrengthMultiplier = motorStrength;
+        float tiltMultiplier = Mathf.Clamp01(1 - Mathf.Abs(transform.rotation.x / tiltAngle));
+
         if (motor > 0)
         {
-            rb.AddForce(
-                transform.forward.normalized * motor * motorStrengthMultiplier * Time.fixedDeltaTime,
-                ForceMode.Impulse
-            ); // Add force to the car (forward
+            rb.AddForce(transform.forward.normalized * motor * motorStrengthMultiplier * Time.fixedDeltaTime * tiltMultiplier, ForceMode.Impulse);
         }
         else if (motor < 0)
         {
@@ -71,11 +68,9 @@ public class CarController : MonoBehaviour
             ApplyLocalPositionToVisuals(axleInfo.rightWheel);
         }
 
-        speedometer.text = string.Format("motor {0:N0}\n{1:N0} kph", motor, rb.velocity.magnitude);
+        speedometer.text = string.Format("motor {0:N0}\n{1:N0} kph\n{2:N0} tilt", motor, rb.velocity.magnitude, transform.rotation.x);
     }
 
-    // finds the corresponding visual wheel
-    // correctly applies the transform
     public void ApplyLocalPositionToVisuals(WheelCollider collider)
     {
         if (collider.transform.childCount == 0)
@@ -85,9 +80,7 @@ public class CarController : MonoBehaviour
 
         Transform visualWheel = collider.transform.GetChild(0);
 
-        Vector3 position;
-        Quaternion rotation;
-        collider.GetWorldPose(out position, out rotation);
+        collider.GetWorldPose(out Vector3 position, out Quaternion rotation);
 
         visualWheel.transform.position = position;
         visualWheel.transform.rotation = rotation;

@@ -4,6 +4,8 @@ public class Despawnable : MonoBehaviour
 {
     private bool hasCollision;
     private float timer;
+    [SerializeField]
+    private float timeToDespawn = 20f;
 
     private void Start()
     {
@@ -23,7 +25,7 @@ public class Despawnable : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            if (timer >= 20f)
+            if (timer >= timeToDespawn)
             {
                 Destroy(gameObject);
             }

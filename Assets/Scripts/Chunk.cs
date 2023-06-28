@@ -36,8 +36,8 @@ public class Chunk : MonoBehaviour
             {
                 float heightValue =
                     Mathf.PerlinNoise(
-                        (x + transform.position.x) * scale,
-                        (y + transform.position.z) * scale
+                        (x + transform.position.x + Constants.seed) * scale,
+                        (y + transform.position.z + Constants.seed) * scale
                     ) * maxHeight;
                 vertices[vertexIndex] = new Vector3(
                     x + transform.position.x,

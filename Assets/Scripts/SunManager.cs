@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class SunManager : MonoBehaviour
 {
-    void Update()
+    [SerializeField]
+    Transform playerTransform;
+    public float distanceFromPlayer;
+
+    void LateUpdate()
     {
-        
+        Vector3 sunPosition =
+            playerTransform.position + (playerTransform.forward * -distanceFromPlayer);
+        transform.position = sunPosition;
     }
 }

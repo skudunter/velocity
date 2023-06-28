@@ -15,7 +15,6 @@ public class AxleInfo
 public class CarController : MonoBehaviour
 {
     public TMPro.TMP_Text speedometer;
-    public TMPro.TMP_Text[] wheelIndicators; // Array of indicators for all four wheels
     public List<AxleInfo> axleInfos;
     public float maxMotorTorque;
     public float maxSteeringAngle;

@@ -4,15 +4,37 @@ using UnityEngine;
 
 public class EnemyBehavior : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private GameObject player;
+    public float movementForce = 10f;
+    public float rotationSpeed = 5f;
+    public float slipperiness = 0.5f;
+    private Rigidbody rb;
+
+    private void Start()
     {
-        
+        player = GameObject.Find("Player");
+        rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        
+        if (player != null)
+        {
+            Vector3 playerDirection = (player.transform.position - transform.position).normalized;
+            Vector3 movementForceVector = playerDirection * movementForce;
+            Vector3 relativeVelocity = transform.InverseTransformDirection(
+                GetComponent<Rigidbody>().velocity
+            );
+            Vector3 slipForce = -relativeVelocity * slipperiness;
+
+            rb.AddForce(movementForceVector + slipForce, ForceMode.Force);
+
+            Quaternion targetRotation = Quaternion.LookRotation(playerDirection);
+            transform.rotation = Quaternion.Lerp(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.fixedDeltaTime
+            );
+        }
     }
 }
